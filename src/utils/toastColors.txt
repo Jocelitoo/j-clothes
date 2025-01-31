@@ -1,0 +1,2 @@
+Fail: #e74c3c
+Success: #07bc0c
