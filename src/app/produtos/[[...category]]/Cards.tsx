@@ -21,7 +21,7 @@ interface CardsProps {
 }
 
 export const Cards: React.FC<CardsProps> = ({ products }) => {
-  const [order, setOrder] = useState('');
+  const [order, setOrder] = useState('date');
   const [currentPage, setCurrentPage] = useState(1); // Página atual
   const [productsPerPage, setProductsPerPage] = useState(12); // Produtos por página
   const [search, setSearch] = useState(''); // Texto digitado para pesquisar produtos
@@ -119,10 +119,7 @@ export const Cards: React.FC<CardsProps> = ({ products }) => {
           className="max-w-80"
         />
 
-        <Select
-          defaultValue={'price+'}
-          onValueChange={(event) => setOrder(event)}
-        >
+        <Select defaultValue={order} onValueChange={(event) => setOrder(event)}>
           <SelectTrigger className="w-36">
             <SelectValue placeholder="Ordenar por:" />
           </SelectTrigger>
