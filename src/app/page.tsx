@@ -1,25 +1,49 @@
+import { Suspense } from 'react';
 import { Banner } from './Banner';
 import { Featured } from './Featured';
-import { prisma } from '@/lib/db';
+import { NewProducts } from './NewProducts';
+import { Loading3 } from '@/components/Loading3';
 
-const Home = async () => {
-  // Pegar os 4 produtos com mais avaliações
-  const featuredProducts = await prisma.product.findMany({
-    take: 4,
-    orderBy: { reviews: { _count: 'desc' } },
-  });
-
-  // Pegar os últimos 4 produtos adicionados
-  const newProducts = await prisma.product.findMany({
-    take: 4,
-    orderBy: { createdAt: 'desc' },
-  });
-
+const Home = () => {
   return (
     <>
       <Banner />
 
-      <Featured featuredProducts={featuredProducts} newProducts={newProducts} />
+      <div className="px-2 sm:px-4 lg:px-20 my-8 space-y-16">
+        <div className="space-y-4">
+          <p className="font-bold text-center text-2xl">Mais avaliados</p>
+
+          <Suspense
+            fallback={
+              <Loading3
+                smartphone={2}
+                notebook={4}
+                desktop={4}
+                numberOfArrays={4}
+              />
+            }
+          >
+            <Featured />
+          </Suspense>
+        </div>
+
+        <div className="space-y-4">
+          <p className="font-bold text-center text-2xl">Novos produtos</p>
+
+          <Suspense
+            fallback={
+              <Loading3
+                smartphone={2}
+                notebook={4}
+                desktop={4}
+                numberOfArrays={4}
+              />
+            }
+          >
+            <NewProducts />
+          </Suspense>
+        </div>
+      </div>
     </>
   );
 };

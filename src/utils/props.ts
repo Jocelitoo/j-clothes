@@ -24,6 +24,7 @@ export interface ProductProps {
   description: string;
   price: number;
   category: string;
+  createdAt: Date;
   variations: VariationsProps[];
   images: ImageProps[];
   reviews?: ReviewProps[];

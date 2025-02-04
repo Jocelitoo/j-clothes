@@ -15,7 +15,7 @@ const Product: React.FC<ProductParamsProps> = async ({ params }) => {
   const { id } = await params; // Pega o parâmetro chamado id que é o id do produto
   const session = await getServerSession(); // Pega os dados da sessão
   const userEmail = session?.user.email; // Pega o email do usuário logado
-  let hableToReview = true;
+  let hableToReview = false;
 
   const product = await prisma.product.findUnique({
     where: { id: id },
@@ -55,7 +55,7 @@ const Product: React.FC<ProductParamsProps> = async ({ params }) => {
         },
       });
 
-      if (reviews.length > 0) hableToReview = false;
+      if (reviews.length === 0) hableToReview = true;
     }
   }
 

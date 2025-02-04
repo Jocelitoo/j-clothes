@@ -1,6 +1,8 @@
 import { Cards } from './Cards';
 import { ProductProps } from '@/utils/props';
 import { prisma } from '@/lib/db';
+import { Suspense } from 'react';
+import { Loading2 } from '@/components/Loading2';
 
 interface ProductsParamsProps {
   params: Promise<{ category: string }>;
@@ -45,4 +47,14 @@ const Products: React.FC<ProductsParamsProps> = async ({ params }) => {
   );
 };
 
-export default Products;
+export default function ProductsPage({
+  params,
+}: {
+  params: Promise<{ category: string }>;
+}) {
+  return (
+    <Suspense fallback={<Loading2 loadingText="Carregando produtos..." />}>
+      <Products params={params} />
+    </Suspense>
+  );
+}

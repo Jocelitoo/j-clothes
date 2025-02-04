@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ProductProps } from '@/utils/props';
+import dayjs from 'dayjs';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -70,6 +71,16 @@ export const Cards: React.FC<CardsProps> = ({ products }) => {
     };
   }, [handleWindowResize]);
 
+  // Mais recentes para os mais antigos
+  if (order === 'date') {
+    products.sort((a, b) => {
+      const aFormated = dayjs(b.createdAt).valueOf(); // Retorna a data A em milisegundos
+      const bFormated = dayjs(a.createdAt).valueOf(); // Retorna a data B em milisegundos
+
+      return aFormated - bFormated;
+    });
+  }
+
   // Maior preço para menor
   if (order === 'price+') {
     products.sort((a, b) => {
@@ -108,13 +119,17 @@ export const Cards: React.FC<CardsProps> = ({ products }) => {
           className="max-w-80"
         />
 
-        <Select onValueChange={(event) => setOrder(event)}>
+        <Select
+          defaultValue={'price+'}
+          onValueChange={(event) => setOrder(event)}
+        >
           <SelectTrigger className="w-36">
             <SelectValue placeholder="Ordenar por:" />
           </SelectTrigger>
 
           <SelectContent>
             <SelectGroup>
+              <SelectItem value="date">Mais recente</SelectItem>
               <SelectItem value="price-">Menor preço</SelectItem>
               <SelectItem value="price+">Maior preço</SelectItem>
               <SelectItem value="name">Nome A-Z</SelectItem>

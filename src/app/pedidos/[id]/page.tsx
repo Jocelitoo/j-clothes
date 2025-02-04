@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/db';
 import { DataTable } from './DataTable';
 import { columns } from './Columns';
+import { Suspense } from 'react';
+import { Loading2 } from '@/components/Loading2';
 
 interface OrdersProps {
   params: Promise<{ id: string }>;
@@ -23,4 +25,14 @@ const Orders: React.FC<OrdersProps> = async ({ params }) => {
   );
 };
 
-export default Orders;
+export default function OrdersPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense fallback={<Loading2 loadingText="Carregando dados..." />}>
+      <Orders params={params} />
+    </Suspense>
+  );
+}
