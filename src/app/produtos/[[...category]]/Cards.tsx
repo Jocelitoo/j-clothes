@@ -26,33 +26,66 @@ export const Cards: React.FC<CardsProps> = ({ products }) => {
   const [productsPerPage, setProductsPerPage] = useState(12); // Produtos por página
   const [search, setSearch] = useState(''); // Texto digitado para pesquisar produtos
 
-  const showProducts: ProductProps[] = []; // Armazena os produtos que serão mostrados
+  // Controlar a ordem que os produtos vão aparecer
+  const sortedProducts = useMemo(() => {
+    const sorted = [...products]; // Criar uma cópia para evitar modificar o estado original
 
-  products.map((product) => {
-    // Colocar tudo em maiúsculo para evitar o erro de n aparecer por exemplo 'Sapato' pq o usuário pesquisou 'sapato'
-    const formatedName = product.name.toUpperCase();
-    const formatedSearch = search.toUpperCase();
+    if (order === 'date') {
+      // Mais recentes para os mais antigos
+      sorted.sort((a, b) => {
+        const aFormated = dayjs(b.createdAt).valueOf(); // Retorna a data A em milisegundos
+        const bFormated = dayjs(a.createdAt).valueOf(); // Retorna a data B em milisegundos
 
-    if (formatedName.includes(formatedSearch)) showProducts.push(product); // Envia pro array os produtos que devem aparecer. Se search for '', todos serão TRUE
-  });
-
-  const amountOfPages = useMemo(() => {
-    const neededPages = Math.ceil(showProducts.length / productsPerPage); // Pega a quantidade de página que vai ser necessário. Math.Ceil() serve para arredondar o número para cima
-    const pages: number[] = []; // Armazena o número de cada página  no array, para podermos usar map
-
-    // Enviar pro array o número de cada página
-    for (let i = 1; i <= neededPages; i++) {
-      pages.push(i);
+        return aFormated - bFormated;
+      });
     }
 
-    return pages;
-  }, [showProducts.length, productsPerPage]);
+    // Maior preço para menor
+    if (order === 'price+') {
+      sorted.sort((a, b) => {
+        return b.price - a.price;
+      });
+    }
+
+    // Menor preço para menor
+    if (order === 'price-') {
+      console.log('oi');
+      sorted.sort((a, b) => {
+        return a.price - b.price;
+      });
+    }
+
+    // Letra A-Z
+    if (order === 'name') {
+      sorted.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
+    }
+
+    // Quantidade de avaliações
+    if (order === 'reviews') {
+      sorted.sort((a, b) => {
+        return (b.reviews?.length || 0) - (a.reviews?.length || 0);
+      });
+    }
+
+    return sorted;
+  }, [products, order]);
+
+  // Filtrar produtos com base na busca
+  const filteredProducts = useMemo(() => {
+    return sortedProducts.filter((product) =>
+      product.name.toUpperCase().includes(search.toUpperCase()),
+    );
+  }, [sortedProducts, search]);
 
   // Lógica para mostrar os produtos de acordo com sua página
-  const formatedProducts = showProducts.slice(
-    currentPage * productsPerPage - productsPerPage,
-    currentPage * productsPerPage,
-  );
+  const formatedProducts = useMemo(() => {
+    return filteredProducts.slice(
+      currentPage * productsPerPage - productsPerPage,
+      currentPage * productsPerPage,
+    );
+  }, [filteredProducts, currentPage, productsPerPage]);
 
   // Controla a quantidade de produtos por página de acordo com o tamanho da tela
   const handleWindowResize = useCallback(() => {
@@ -63,51 +96,13 @@ export const Cards: React.FC<CardsProps> = ({ products }) => {
   useEffect(() => {
     handleWindowResize(); // Executa a função quando a página é carregada
 
-    // Executa a função quando a página é recarregada
+    // Executa a função quando a página é teu seu tamanho alterado
     window.addEventListener('resize', handleWindowResize);
 
     return () => {
       window.removeEventListener('resize', handleWindowResize);
     };
   }, [handleWindowResize]);
-
-  // Mais recentes para os mais antigos
-  if (order === 'date') {
-    products.sort((a, b) => {
-      const aFormated = dayjs(b.createdAt).valueOf(); // Retorna a data A em milisegundos
-      const bFormated = dayjs(a.createdAt).valueOf(); // Retorna a data B em milisegundos
-
-      return aFormated - bFormated;
-    });
-  }
-
-  // Maior preço para menor
-  if (order === 'price+') {
-    products.sort((a, b) => {
-      return b.price - a.price;
-    });
-  }
-
-  // Menor preço para menor
-  if (order === 'price-') {
-    products.sort((a, b) => {
-      return a.price - b.price;
-    });
-  }
-
-  // Letra A-Z
-  if (order === 'name') {
-    products.sort((a, b) => {
-      return a.name.localeCompare(b.name);
-    });
-  }
-
-  // Quantidade de avaliações
-  if (order === 'reviews') {
-    products.sort((a, b) => {
-      return (b.reviews?.length || 0) - (a.reviews?.length || 0);
-    });
-  }
 
   return (
     <>
@@ -153,38 +148,31 @@ export const Cards: React.FC<CardsProps> = ({ products }) => {
         </Button>
 
         <div className="flex justify-center gap-2">
-          {amountOfPages.map((page, index) => {
-            const isPageInRange =
-              (currentPage === 1 && page <= 3) ||
-              (currentPage === amountOfPages.length &&
-                page >= amountOfPages.length - 2) ||
-              page === currentPage ||
-              page === currentPage - 1 ||
-              page === currentPage + 1;
-
-            return (
-              isPageInRange && (
-                <Button
-                  key={index}
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setCurrentPage(page);
-                    window.scrollTo(0, 0); // Rola a página para o topo
-                  }}
-                  className={`${currentPage === page && 'bg-slate-100'}`}
-                >
-                  {page}
-                </Button>
-              )
-            );
-          })}
+          {Array.from(
+            { length: Math.ceil(filteredProducts.length / productsPerPage) },
+            (_, i) => i + 1,
+          ).map((page) => (
+            <Button
+              key={page}
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setCurrentPage(page);
+                window.scrollTo(0, 0);
+              }}
+              className={`${currentPage === page && 'bg-slate-100'}`}
+            >
+              {page}
+            </Button>
+          ))}
         </div>
 
         <Button
           variant="outline"
           type="button"
-          disabled={currentPage === amountOfPages.length}
+          disabled={
+            currentPage === Math.ceil(filteredProducts.length / productsPerPage)
+          }
           onClick={() => {
             setCurrentPage((previousValue) => previousValue + 1);
             window.scrollTo(0, 0); // Rola a página para o topo
