@@ -55,7 +55,11 @@ export const MobileNav: React.FC<MobileNavProps> = ({ currentUser, links }) => {
       {isLoading && <Loading loadingText="Saindo..." />}
 
       <div className="flex items-center gap-4 lg:hidden">
-        <Link href={'/carrinho'} className="relative">
+        <Link
+          href={'/carrinho'}
+          aria-label="Ir para o carrinho de compras"
+          className="relative"
+        >
           <ShoppingBag className="hover:fill-cyan-300" />
 
           {totalCartProducts >= 1 && (

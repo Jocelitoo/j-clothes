@@ -74,7 +74,11 @@ export const DesktopNav: React.FC<DesktopNavProps> = ({
       </nav>
 
       <div className="hidden items-center gap-6 lg:flex">
-        <Link href={'/carrinho'} className="relative">
+        <Link
+          href={'/carrinho'}
+          aria-label="Ir para o carrinho de compras"
+          className="relative"
+        >
           <ShoppingBag className="hover:fill-cyan-300" />
 
           {totalCartProducts >= 1 && (
