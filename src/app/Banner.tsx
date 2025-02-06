@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export const Banner = () => {
   return (
-    <div className="bg-cyan-100  pt-8 pb-8 sm:pb-0">
+    <div className="bg-cyan-100 pt-8 pb-8 sm:pb-0">
       <div className="px-2 sm:px-4 lg:px-20 flex items-center justify-between gap-4">
         <div className="flex flex-col items-center text-center gap-4 w-full sm:items-start sm:text-start ">
           <h1 className="text-2xl font-bold lg:text-4xl">
@@ -22,12 +22,12 @@ export const Banner = () => {
           </Link>
         </div>
 
-        <div className="w-full object !hidden sm:!block">
+        <div className="w-full h-auto !hidden sm:!block ">
           <Image
-            src={'/images/banner_image.png'}
+            src={'/images/banner_image_2.png'}
+            loading="eager"
             width={700}
             height={700}
-            className="object-contain"
             alt="Mulher de camisa amarela"
           />
         </div>
