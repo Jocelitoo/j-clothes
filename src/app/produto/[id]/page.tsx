@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { ProductImage } from './ProductImage';
 import { ProductInfo } from './ProductInfo';
 import { prisma } from '@/lib/db';
 import { Review } from './Review';
 import { getServerSession } from 'next-auth';
-
-type Params = Promise<{ id: string }>;
+import { Loading2 } from '@/components/Loading2';
 
 interface ProductParamsProps {
-  params: Params;
+  params: Promise<{ id: string }>;
 }
 
 const Product: React.FC<ProductParamsProps> = async ({ params }) => {
@@ -60,7 +59,7 @@ const Product: React.FC<ProductParamsProps> = async ({ params }) => {
   }
 
   return product ? (
-    <div className="px-2 sm:px-4 lg:px-20">
+    <div className="mb-8 px-2 sm:px-4 lg:px-20">
       <div className="flex-grow grid grid-cols-1 sm:grid-cols-2 items-center justify-center gap-4 sm:gap-8 my-8 max-w-[1060px] mx-auto">
         <ProductImage product={product} />
 
@@ -76,4 +75,16 @@ const Product: React.FC<ProductParamsProps> = async ({ params }) => {
   );
 };
 
-export default Product;
+export default function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense fallback={<Loading2 loadingText="Carregando..." />}>
+      <Product params={params} />
+    </Suspense>
+  );
+}
+
+// export default Product;

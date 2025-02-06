@@ -183,25 +183,33 @@ export const Review: React.FC<ReviewProps> = ({ product, hableToReview }) => {
       )}
 
       <div>
-        {product.reviews?.map((review, index) => {
-          return (
-            <div key={index} className="space-y-3 max-w-xl">
-              <div className="flex items-center gap-2">
-                <User2 />
+        {product.reviews === undefined || product.reviews?.length === 0 ? (
+          <p>0 avaliações</p>
+        ) : (
+          product.reviews.map((review, index) => {
+            return (
+              <div key={index} className="space-y-3 max-w-xl">
+                <div className="flex items-center gap-2">
+                  <User2 />
 
-                <p className="text-xl font-semibold">{review.userName}</p>
+                  <p className="text-xl font-semibold">{review.userName}</p>
 
-                <p>{formatDate(review.createdAt)}</p>
+                  <p>{formatDate(review.createdAt)}</p>
+                </div>
+
+                <Rating count={5} value={review.rating} />
+
+                <p>{review.text}</p>
+
+                <Separator />
               </div>
+            );
+          })
+        )}
 
-              <Rating count={5} value={review.rating} />
-
-              <p>{review.text}</p>
-
-              <Separator />
-            </div>
-          );
-        })}
+        {/* {product.reviews?.map((review, index) => {
+         
+        })} */}
       </div>
     </div>
   );
