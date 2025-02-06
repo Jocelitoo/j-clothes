@@ -24,7 +24,7 @@ export const Banner = () => {
 
         <div className="w-full h-auto !hidden sm:!block ">
           <Image
-            src={'/images/banner_image_2.png'}
+            src={'/images/banner_image.png'}
             loading="eager"
             width={700}
             height={700}
