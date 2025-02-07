@@ -161,7 +161,7 @@ export const CartTable = () => {
               <p className="text-xl">Nenhum produto encontrado</p>
 
               <Link
-                href="/products"
+                href="/produtos"
                 className="flex justify-center hover:underline"
               >
                 <ArrowLeft size={20} /> Ir às compras

@@ -33,8 +33,12 @@ export const Header = () => {
   const { currentUser } = useCurrentUserContext(); // Pegar os dados do usuário logado
 
   return (
-    <header className="py-2 px-2 sm:px-4 lg:px-20 fixed left-0 top-0 right-0 z-50 flex justify-between items-center bg-slate-200 ">
-      <Link href={'/'} className="font-semibold uppercase">
+    <header className="py-2 px-2 sm:px-4 lg:px-20 sticky left-0 top-0 right-0 z-50 flex justify-between items-center bg-slate-200 ">
+      <Link
+        href={'/'}
+        aria-label="Ir para a página inicial"
+        className="font-semibold uppercase"
+      >
         J-Clothes
       </Link>
 

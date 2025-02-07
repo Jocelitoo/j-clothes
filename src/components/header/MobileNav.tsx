@@ -86,12 +86,14 @@ export const MobileNav: React.FC<MobileNavProps> = ({ currentUser, links }) => {
             <nav className="mt-4">
               <ul className="space-y-4">
                 {links.map((link, index) => {
+                  const decodedCurrentPage = decodeURIComponent(currentPage); // À codificação de URL transforma caracteres especiais (como acentos, ç) em sequências percentuais. Então precisamos primeiro decodificar eles pra usarmos sem erro com palavras acentuadas
+
                   return (
                     <li key={index}>
                       <SheetClose asChild>
                         <Link
                           href={link.link}
-                          className={`p-2 rounded-md inline-block w-full ${currentPage === link.link ? 'bg-cyan-300' : 'bg-slate-200'}`}
+                          className={`p-2 rounded-md inline-block w-full ${decodedCurrentPage === link.link ? 'bg-cyan-300' : 'bg-slate-200'}`}
                         >
                           {link.text}
                         </Link>
